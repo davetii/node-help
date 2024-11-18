@@ -102,3 +102,5 @@ processInputLineByLine(filePath);
 console.log("Report ");
 console.log("totalRows: " + totalRows);
 console.log("Rows over 3 seconds: " + rowsOver3Seconds);
+
+console.log("End of script.");
