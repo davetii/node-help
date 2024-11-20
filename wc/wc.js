@@ -1,81 +1,55 @@
 import fsp from 'fs/promises';
-import fs from 'fs';
 
-
-
-async function readWords(f) {
-  try {
-    const content = await fs.promises.readFile(f, 'utf8');
-    return  content.split(/\s+/).length;
-} catch (err) {
-    console.error(`Error reading file: ${err}`);
-}
-}
-
-async function readLines(f) {
+async function countBytes(f) {
     try {
-      const content = await fs.promises.readFile(f, 'utf8');
-      return  content.split('\n').length;
-  } catch (err) {
-      console.error(`Error reading file: ${err}`);
-  }
-}
-
-async function readBytes(f) {
-  try {
-      const stats = await fsp.stat(f);
-      return stats.size;
-  } catch (err) {
-      console.error(`Error reading file: ${err}`);
-  }
-}
-
-async function countBytes(target) {
-  (async () => {
-    try {
-        const result =  await readBytes(target)
-        console.log(result + " " + target)
+        let stats = await fsp.stat(f);
+        return stats.size;
     } catch (error) {
-        console.error(error);
+        console.error('Error:', error);
     }
-  })();
 }
 
-async function countWords(target) {
-  (async () => {
+
+async function countWords(f) {
     try {
-        const result =  await readWords(target)
-        console.log(result + " " + target)
-    } catch (error) {
-        console.error(error);
+        const content = await fsp.readFile(f, 'utf8');
+        return  content.split(/\s+/).length;
+    } catch (err) {
+        console.error(`Error reading file: ${err}`);
     }
-  })();
 }
 
-async function countLines(target) {
-  (async () => {
+async function countLines(f) {
     try {
-        const result =  await readLines(target)
-        console.log(result + " " + target)
-    } catch (error) {
-        console.error(error);
+        const content = await fsp.readFile(f, 'utf8');
+        return content.split('\n').length;
+    } catch (err) {
+        console.error(`Error reading file: ${err}`);
     }
-  })();
 }
 
-if (process.argv.length == 4) {
-  const proc = process.argv[2];
-  if ( proc == '-c') {
-    countBytes(process.argv[3]);
-  } else if (proc == '-l') {
-    countLines(process.argv[3]);
-  } else if (proc == '-w') {
-    countWords(process.argv[3]);
-  } else {
-    console.log("Invalid proccess called");
-  }
-} else {
-  console.log('Invalid arguments provided');
+async function main() {
+    if (process.argv.length === 4) {
+        const proc = process.argv[2];
+        let result;
+        if ( proc === '-c')
+            result = await countBytes(process.argv[3]);
+        else if (proc === '-l')
+            result = await countLines(process.argv[3]);
+        else if (proc === '-w')
+            result = await countWords(process.argv[3]);
+        else
+            result = "Invalid proccess called";
+        console.log(result + " " + process.argv[3]);
+    } else if (process.argv.length === 3) {
+        const bytes = await countBytes(process.argv[2]);
+        const lines = await countLines(process.argv[2]);
+        const words = await countWords(process.argv[2]);
+        console.log(bytes + " " + lines + " " +  words + " " + process.argv[2]);
+    } else {
+        console.log('Invalid arguments provided');
+    }
 }
 
+main();
 
