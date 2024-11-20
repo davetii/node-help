@@ -3,3 +3,5 @@
 
 # Optionally, you can also ignore log files in all subdirectories
 # **/*.log
+
+*.idea
