@@ -39,7 +39,7 @@ async function main() {
         else if (proc === '-w')
             result = await countWords(process.argv[3]);
         else
-            result = "Invalid proccess called";
+            result = "Invalid process called";
         console.log(result + " " + process.argv[3]);
     } else if (process.argv.length === 3) {
         const bytes = await countBytes(process.argv[2]);
